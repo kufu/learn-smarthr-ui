@@ -30,7 +30,7 @@ const Post = ({ mdxSource, frontMatter }: Props) => {
 export default Post
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const files = fs.readdirSync(path.join('posts'))
+  const files = fs.readdirSync(path.join('documents'))
 
   const paths = files.map((filename) => ({
     params: {
@@ -46,8 +46,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const slug = params!.slug
-  console.log(slug)
-  const markdownWithMeta = fs.readFileSync(path.join('posts', slug + '.mdx'), 'utf-8')
+  const markdownWithMeta = fs.readFileSync(path.join('documents', slug + '.mdx'), 'utf-8')
   const { data: frontMatter, content } = matter(markdownWithMeta)
   const mdxSource = await serialize(content, { scope: frontMatter })
 
