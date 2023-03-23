@@ -1,8 +1,7 @@
 import { GetStaticProps } from 'next'
 import Link from 'next/link'
-import { Button } from 'smarthr-ui'
 
-import { PostData, getSortedPostsData } from '../libs/mdxUtils'
+import { PostData, getAllPostsData } from '../libs/mdxUtils'
 
 interface ArchiveProps {
   allPostsData: PostData[]
@@ -15,7 +14,7 @@ export default function Archive({ allPostsData }: ArchiveProps) {
       <ul>
         {allPostsData.map(({ id, date, title }) => (
           <li key={id}>
-            <Link href={`/documents/${id}`} passHref>
+            <Link href={`/getting-started/${id}`} passHref>
               {title}
             </Link>
             <br />
@@ -28,7 +27,7 @@ export default function Archive({ allPostsData }: ArchiveProps) {
 }
 
 export const getStaticProps: GetStaticProps<ArchiveProps> = async () => {
-  const allPostsData = getSortedPostsData()
+  const allPostsData = getAllPostsData()
   return {
     props: {
       allPostsData,

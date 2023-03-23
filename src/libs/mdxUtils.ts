@@ -3,7 +3,7 @@ import path from 'path'
 
 import matter from 'gray-matter'
 
-const postsDirectory = path.join(process.cwd(), 'documents')
+const postsDirectory = path.join(process.cwd(), 'src/pages/getting-started')
 
 export interface PostData {
   id: string
@@ -11,7 +11,7 @@ export interface PostData {
   title: string
 }
 
-export function getSortedPostsData(): PostData[] {
+export function getAllPostsData(): PostData[] {
   const fileNames = fs.readdirSync(postsDirectory)
   const allPostsData = fileNames.map((fileName) => {
     const id = fileName.replace(/\.mdx$/, '')
