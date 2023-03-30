@@ -3,12 +3,11 @@ import { Sandpack } from '@codesandbox/sandpack-react'
 type CustomSandpackProps = {
   template: any
   filename: string
-  packages: Array<Record<string, string>>
   children: string
 }
 
 export const CustomSandpack = (props: CustomSandpackProps) => {
-  const { children, filename, packages = {} } = props
+  const { children, filename } = props
   return (
     <Sandpack
       template="react-ts"
@@ -16,7 +15,6 @@ export const CustomSandpack = (props: CustomSandpackProps) => {
         dependencies: {
           'smarthr-ui': 'latest',
           'styled-components': 'latest',
-          ...packages,
         },
       }}
       files={{
