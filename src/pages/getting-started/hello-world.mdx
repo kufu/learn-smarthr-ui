@@ -4,6 +4,7 @@ description: 説明が入る
 ---
 
 import { Button } from 'smarthr-ui'
+import { CustomSandpack } from '../../components/CustomSandpack';
 
 # h1 Heading 8-)
 ## h2 Heading
@@ -14,8 +15,20 @@ import { Button } from 'smarthr-ui'
 
 
 <Button>ボタンサンプル</Button>
-<Button variant="primary">ボタンサンプル</Button>
 
+<CustomSandpack
+  filename="/App.tsx"
+  children={
+    `import { Button, Cluster } from 'smarthr-ui'
+  export default function App() {
+  return (
+    <Cluster>
+      <Button>ボタンサンプル</Button>
+      <Button variant="primary">ボタンサンプル</Button>
+    </Cluster>
+  )
+}`}
+ />
 
 ## Horizontal Rules
 
