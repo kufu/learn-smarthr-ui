@@ -10,4 +10,4 @@ pnpm dev
 
 ## ドキュメント格納先
 
-`src/pages/getting-started`
+`pages/getting-started`
