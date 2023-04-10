@@ -1,10 +1,13 @@
----
-title: はじめに
-description: 説明が入る
----
+export const meta  = {
+  title: 'テンプレート',
+  description: '説明が入る',
+}
+
+import { Layout } from '@/features/layout'
+export default ({children}) => <Layout meta={meta}>{children}</Layout>
 
 import { Button } from 'smarthr-ui'
-import { CustomSandpack } from '../../components/CustomSandpack';
+import { SmartHRUIPreview } from '@/features/smarthr-preview'
 
 # h1 Heading 8-)
 ## h2 Heading
@@ -16,19 +19,20 @@ import { CustomSandpack } from '../../components/CustomSandpack';
 
 <Button>ボタンサンプル</Button>
 
-<CustomSandpack
-  filename="/App.tsx"
-  children={
-    `import { Button, Cluster } from 'smarthr-ui'
-  export default function App() {
+<SmartHRUIPreview
+  files={{
+    'App.tsx': `import { Button, Cluster } from 'smarthr-ui'
+
+export default function App() {
   return (
     <Cluster>
       <Button>ボタンサンプル</Button>
       <Button variant="primary">ボタンサンプル</Button>
     </Cluster>
   )
-}`}
- />
+}`,
+  }}
+/>
 
 ## Horizontal Rules
 

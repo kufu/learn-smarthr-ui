@@ -1,15 +1,10 @@
 import { Sandpack } from '@codesandbox/sandpack-react'
+import { ComponentProps } from 'react'
 
-type CustomSandpackProps = {
-  template: any
-  filename: string
-  children: string
-}
-
-export const CustomSandpack = (props: CustomSandpackProps) => {
-  const { children, filename } = props
+export const SmartHRUIPreview: React.FC<ComponentProps<typeof Sandpack>> = (props) => {
   return (
     <Sandpack
+      {...props}
       template="react-ts"
       customSetup={{
         dependencies: {
@@ -17,15 +12,13 @@ export const CustomSandpack = (props: CustomSandpackProps) => {
           'styled-components': 'latest',
         },
       }}
-      files={{
-        [filename]: { code: children, hidden: false },
-      }}
       options={{
         showLineNumbers: true,
         showInlineErrors: true,
         showTabs: true,
         closableTabs: false,
       }}
+      theme="dark"
     />
   )
 }
