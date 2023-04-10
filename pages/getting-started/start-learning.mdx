@@ -1,0 +1,70 @@
+
+import { Layout } from '@/features/layout'
+import { SmartHRUIPreview } from '@/features/smarthr-preview'
+
+export default ({children}) => <Layout meta={meta}>{children}</Layout>
+
+export const meta =  {
+  title: 'SmartHR UIの技術',
+  description: 'SmartHR UIの技術',
+}
+
+SmartHR UIは [React](https://ja.reactjs.org/) と [styled-components](https://styled-components.com/) とで実装された、業務アプリケーション向けに特化したコンポーネントライブラリです。
+以下では、React と styled-components のライブラリの特徴と簡易な使い方を紹介します。
+
+### React
+Reactは、Facebookが開発したJavaScriptのライブラリです。
+Reactでは、UIをコンポーネントという単位に分割し、それぞれを独立して開発・保守するような設計思想があります。
+
+Reactを使用するには、コンポーネントを作成し、状態やプロパティを管理することが主なタスクとなります。
+以下は、Reactを使った最も簡単なコンポーネントの例です。
+`<Welcome>`コンポーネントを定義して`props`[^1]として`name`を受け取り、`<h1>`タグで囲んで表示しています。
+
+<SmartHRUIPreview
+  files={{
+    'App.tsx': `const Welcome = (props) => {
+  return <h1>{props.name}、こんにちは!</h1>;
+}
+
+export default function App() {
+  return (
+    <Welcome name="皆様" />
+  )
+}`,
+  }}
+/>
+
+### styled-components
+
+styled-componentsは、CSS-in-JSのライブラリの一つです。Reactコンポーネントにスタイルを適用する方法を提供します。
+これにより、スタイルとコンポーネントのロジックを1つにまとめて管理でき、コードの見通しが良くなります。
+基本的な使い方としては`styled`関数をインポートし、タグ関数として適用することで、スタイリングされたコンポーネントを作成できます。
+
+以下は、styled-componentsを使った簡単な例です。
+このコードでは`StyledButton`というコンポーネントを作成し、ボタンにスタイルを適用しています。
+
+<SmartHRUIPreview
+  files={{
+    'App.tsx': `import styled from 'styled-components';
+
+export default function App() {
+  return <StyledButton>私を押して</StyledButton>
+}
+
+const StyledButton = styled.button\`
+  background-color: blue;
+  color: white;
+  font-size: 1em;
+  padding: 0.25em 1em;
+  border: none;
+  border-radius: 3px;
+\`;
+
+`,
+  }}
+/>
+
+より詳しくReactやstyled-componentを知りたい方は当ドキュメントではなく、公式ドキュメントを参照することをおすすめします。
+
+
+[^1]: Reactコンポーネント間でデータを渡すために使われるオブジェクトです。親コンポーネントから子コンポーネントへデータを渡す際、propsを使って子コンポーネントに情報を伝えます。propsは読み取り専用であり、コンポーネント内で変更することはできません。
