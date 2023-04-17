@@ -41,8 +41,7 @@ const Archive: React.FC<{ posts: Post[] }> = ({ posts }) => {
       </p>
 
       <p>
-        最後まで読み進めることで、SmartHR UI
-        を使って画面を作るために必要な知識をすべて身につけることができるでしょう。
+        最後まで読み進めることで、SmartHR UI を使って画面を作るために必要な知識をすべて身につけることができるでしょう。
       </p>
 
       <BaseColumn>
