@@ -1,0 +1,115 @@
+export const meta  = {
+  title: 'Heading / Text',
+  description: '説明が入る',
+}
+
+import { Layout } from '@/features/layout'
+export default ({children}) => <Layout meta={meta}>{children}</Layout>
+
+import { Button } from 'smarthr-ui'
+import { SmartHRUIPreview } from '@/features/smarthr-preview'
+
+# Heading / Text
+
+最も基本的なコンポーネントから学習を始めていきます。
+`Heading`と`Text`コンポーネントは、SmartHR UIのコンポーネントの中で特によく使うことになるでしょう。
+
+## Heading
+
+`Heading`コンポーネントは、直後に続くコンテンツの見出しに使います。
+
+次のコードを変更してタイトル名を変えてみましょう。要領としては、`h1`や`h2`といった見出しタグの使いかたと一緒です。
+`Heading`コンポーネントに閉じられた中身を
+
+<SmartHRUIPreview
+  files={{
+    'App.tsx': `import { Heading } from 'smarthr-ui'
+
+export default function App() {
+  return (
+    <Heading type="screenTitle" tag="h1">
+      これはページタイトル
+    </Heading>
+  )
+}`,
+  }}
+/>
+
+なお、Reactで作られたコンポーネントすべてに共通しますが、コンポーネントにはそれぞれ`Props`という、コンポーネントの振る舞いを変えるための設定があります。
+
+`Heading`コンポーネントには文字サイズが変更できる`type`と、出力要素を変更できる`tag`という`Props`が用意されています。
+試しに`type`の値を変えてみましょう。`type`には`screenTitle`、`pageTitle`、`sectionTitle`、`blockTitle`、`subBlockTitle`の5つの値を指定できます。
+
+<SmartHRUIPreview
+  files={{
+    'App.tsx': `import { Heading } from 'smarthr-ui'
+
+export default function App() {
+  return (
+    <Heading type="pageTitle" tag="h1">
+      これはページタイトル
+    </Heading>
+  )
+}`,
+  }}
+/>
+
+なお、`Props`の値は、予め決められた値の中から選ぶ必要があります。`type`に`titlle`という値を指定してみましょう。その場合指定された値では無いのでエラーがおきて画面が描画されません。
+
+
+### 関連リンク
+
+[Heading | コンポーネント | SmartHR Design System](https://smarthr.design/products/components/heading/)
+
+
+## Text
+
+`Text`コンポーネントは段落や段落内のテキストの装飾に使います。
+デザインシステムにも書かれていますが、デフォルトの出力要素は`span`で、文字サイズは`M`、行間は`NORMAL`、色は`inherit`です。
+
+試しに`span`から`p`タグに、文字サイズを`L`に変えてみましょう。以下のコードにPropsの属性から追加してみてください。
+出力要素の変更は`as`、文字サイズは`size`Propsで変更できます。
+
+<SmartHRUIPreview
+  files={{
+    'App.tsx': `import { Text } from 'smarthr-ui'
+
+export default function App() {
+  return (
+    <Text>
+      イカした本文が入ります。
+    </Text>
+  )
+}`,
+  }}
+/>
+
+変わりましたか？なお`Heading`コンポーネントも`Text`タグもそうですが、各コンポーネントは入れ子にすることができます。
+以下の例では`paragraph`で出力した`Text`コンポーネントの中に`span`で出力した`Text`コンポーネントを挿入しています。
+
+<SmartHRUIPreview
+  files={{
+    'App.tsx': `import { Text } from 'smarthr-ui'
+
+export default function App() {
+  return (
+    <>
+      <Text as="p">
+        <Text color="TEXT_LINK" weight="bold">カラーや強調</Text>ができます。
+      </Text>
+      <Text as="p" emphasis>
+        <code>emphasis</code>を渡すとそのテキストは強調を示し、<code>em</code>要素の太字装飾で出力します。
+      </Text>
+    </>
+  )
+}`,
+  }}
+/>
+
+注意点として各コンポーネントは`Props`側に制約が入っていない限り、コンテンツカテゴリーが何かを判別はできません。
+
+
+### 関連リンク
+
+- [Text | コンポーネント | SmartHR Design System](https://smarthr.design/products/components/text/)
+- [コンテンツカテゴリー - HTML: HyperText Markup Language | MDN](https://developer.mozilla.org/ja/docs/Web/HTML/Content_categories)
