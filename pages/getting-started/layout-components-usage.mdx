@@ -1,0 +1,169 @@
+export const meta = {
+  title: '代表的なレイアウトコンポーネントの使い方'
+}
+
+import { Layout } from '@/features/layout'
+import { SmartHRUIPreview } from '@/features/smarthr-preview'
+
+export default ({ children }) => <Layout meta={meta}>{children}</Layout>
+
+ここでは代表的なレイアウトコンポーネントの特徴と、画面を作る上で最低限必要な余白の扱い方を学びます。
+
+## 代表的なレイアウトコンポーネント
+
+UI としての画面を2次元平面上に表示する限り、画面を構成する要素は縦に並べるか、横に並べるかのどちらかになります。この2つのレイアウトを実現するために、それぞれコンポーネントが用意されています。
+
+- Stack
+- Cluster
+
+いずれのコンポーネントも子要素間の余白を管理するためのコンポーネントです。
+
+### 関係性と余白の関係
+
+余白は要素と要素の間に発生し、余白の大きさは要素同士の関係性に応じて相対的に決めます。関係性が強ければ強いほど余白は狭く、弱ければ弱いほど余白は広くします。また、同じ関係性を持つ要素間の余白には同じ値を使います。これは人間が近いものや似ているものを同じグループとして認識したり、同一視したりするゲシュタルト法則の「近接」に基づいています。
+
+### 余白の大きさ
+
+余白の大きさはブラウザのデフォルト文字サイズ 16px の倍数で設計されています。1文字分の余白であれば `1`、2文字分の余白であれば `2`、半文字文であれば `0.5` といった具合に、余白の大きさを数値で表します。
+
+SmartHR UI では `0.25` から `8` までの余白を用意しています。
+
+余白の値 | 余白の大きさ（px）
+--- | ---
+0.25 | 4px
+0.5 | 8px
+0.75 | 12px
+1 | 16px
+1.25 | 20px
+1.5 | 24px
+2 | 32px
+2.5 | 40px
+3 | 48px
+3.5 | 56px
+4 | 64px
+8 | 128px
+
+## 余白を指定してみましょう!
+
+SmartHR UI のレイアウトコンポーネントにおける余白は、すべて `gap` という props で指定できます。
+
+それでは早速、次のコードを変更して余白を変えてみましょう。段落 `<p />` と段落 `<p />` の間に、デフォルトで `gap={1}`、つまり1文字分 16px の余白が入っています。
+
+<SmartHRUIPreview
+  files={{
+    'App.tsx': `import { Stack } from 'smarthr-ui'
+
+export default function App() {
+  return (
+    <Stack gap={1}>
+      <p>これは1つ目の段落です。</p>
+      <p>これは2つ目の段落です。段落と段落の間には Stack で指定した余白が設定されます。</p>
+    </Stack>
+  )
+}`,
+  }}
+/>
+
+変えられましたか? 試しに前述の余白の大きさ以外の値も試してみましょう。SmartHR UI で許していない値以外は反映されないことがわかります。
+
+この一貫した `gap` を持つレイアウトコンポーネントを使うことで、ページやプロダクトをまたいでも同じ意図で画面を構成できるのです。
+
+## 縦に均等に並べる Stack
+
+あるメニューに並ぶメニューアイテムや、見出しに続く本文とテーブルなど、同じグループに属する要素を縦に並べる場合、意図しない限りその余白は同じになるはずです。このような場合には、Stack コンポーネントを使います。
+
+<SmartHRUIPreview
+  files={{
+    'App.tsx': `import { Base, Heading, Stack } from 'smarthr-ui'
+
+export default function App() {
+  return (
+    <Stack gap={1}>
+      <Heading>暗黙のセクショニングによるグループ</Heading>
+      <p>この段落は見出しに関連しています。</p>
+      <Base padding={1}>
+        <p>この Base も見出しに関連しています。</p>
+      </Base>
+    </Stack>
+  )
+}`,
+  }}
+/>
+
+もしあなたが意図的にグルーピングしたい場合、Stack コンポーネントを入れ子にすることで表現できるかもしれません。
+
+<SmartHRUIPreview
+  files={{
+    'App.tsx': `import { Base, Heading, Stack } from 'smarthr-ui'
+
+export default function App() {
+  return (
+    <Stack gap={1.5}>
+      <Stack gap={0.5}>
+        <Heading>暗黙のセクショニングによるグループ</Heading>
+        <p>この段落は見出しに関連しています。</p>
+      </Stack>
+      <Stack gap={0.5}>
+        <Heading tag="h2">Base 一覧</Heading>
+        {Array.from({ length: 3 }).map((_, index) => (
+          <Base key={index} padding={1}>
+            <p>これは{index + 1}つ目の Base</p>
+          </Base>
+        ))}
+      </Stack>
+    </Stack>
+  )
+}`,
+  }}
+/>
+
+## 横に均等に並べる Cluster
+
+あるオブジェクトに紐づく複数の操作ボタンや、見出しに続く複数のステータスラベルなど、同じ役割を持つ要素を横に並べる場合 Cluster コンポーネントを使います。
+
+<SmartHRUIPreview
+  files={{
+    'App.tsx': `import { Button, Cluster } from 'smarthr-ui'
+
+export default function App() {
+  return (
+    <Cluster gap={0.5}>
+      <Button>キャンセル</Button>
+      <Button variant="primary">保存</Button>
+    </Cluster>
+  )
+}`,
+  }}
+/>
+
+## Stack と Cluster の大きな違い
+
+縦に並べるか、横に並べるかで使い分ける Stack と Cluster ですが、大きな違いがあります。それはウェブや画面が持つコンテンツの方向性とスクロールの関係にあります。
+
+ウェブは基本的に上から下にコンテンツが流れ、文字は左から右に流れます（左書き言語の場合）。そのため人の視線は「[F の字になる](https://www.nngroup.com/articles/f-shaped-pattern-reading-web-content-discovered/)」というのは有名な話です。
+
+その慣習に従って、人は縦方向へのスクロールは問題にしませんが、横方向のスクロールは苦手としています。これは端末や利用環境を問わず発生していると考えられます。
+
+では Cluster で画面領域を超える量のコンテンツが配置した場合、そのコンテンツはどうなるでしょうか? 表示領域を超えて横に並び続けるのでしょうか? いえ、デフォルトでは画面領域の端に到達し入り切らなかったコンテンツは「折返し」され、縦に並びます。
+
+これが Stack と Cluster の持つ大きな違いです。Cluster を扱う場合、あなたは必ず「どんな環境で利用されうるのか」を考えなくてはなりません。Stack は縦方向の `gap` だけ持ちますが、Cluster は横方向の `gap` だけでなく “折り返された” 場合における縦方向の `gap` も持つのです。
+
+その場合 `gap` には Object を渡し、`column` と `row` を指定してください。`column` は横方向の `gap` で、`row` は縦方向の `gap` です。Cluster の `gap` に単一の値を渡した場合は、`column` も `row` も同じ値になります。
+
+<SmartHRUIPreview
+  files={{
+    'App.tsx': `import { Cluster, StatusLabel } from 'smarthr-ui'
+
+export default function App() {
+  return (
+    <Cluster gap={{ column: 0.5, row: 0.25 }}>
+      {Array.from({ length: 10 }).map((_, index) => (
+        <StatusLabel key={index} type="grey">
+          {index + 1}つ目のステータスラベル
+        </StatusLabel>
+      ))}
+    </Cluster>
+  )
+}`,
+  }}
+/>
