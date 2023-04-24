@@ -41,23 +41,23 @@ styled-componentsは、CSS-in-JSのライブラリの一つです。Reactコン�
 基本的な使い方としては`styled`関数をインポートし、タグ付きテンプレートリテラルとして CSS を書くことで、対象のコンポーネントに閉じたスタイルを当てられます。
 
 以下は、styled-componentsを使った簡単な例です。
-このコードでは`StyledButton`というコンポーネントを作成し、ボタンにスタイルを適用しています。
+このコードでは`AwesomeButton`というコンポーネントを作成し、ボタンにスタイルを適用しています。
 
 <SmartHRUIPreview
   files={{
     'App.tsx': `import styled from 'styled-components';
 
 export default function App() {
-  return <StyledButton>私を押して</StyledButton>
+  return <AwesomeButton>私を押して</AwesomeButton>
 }
 
-const StyledButton = styled.button\`
-  background-color: blue;
-  color: white;
+const AwesomeButton = styled.button\`
+  background-color: #00c4cc;
+  color: black;
   font-size: 1em;
   padding: 0.25em 1em;
   border: none;
-  border-radius: 3px;
+  border-radius: 8px;
 \`;
 
 `,
