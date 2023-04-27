@@ -65,8 +65,11 @@ export default function App() {
 `Text`コンポーネントは段落や段落内のテキストの装飾に使います。
 デザインシステムにも書かれていますが、デフォルトの出力要素は`span`で、文字サイズは`M`、行間は`NORMAL`、色は`inherit`です。
 
-試しに`span`から`p`タグに、文字サイズを`L`に変えてみましょう。以下のコードに`Props`の属性から追加してみてください。
-出力要素の変更は`as`、文字サイズは`size`の`Props`で変更できます。
+では試しに「p要素」で「文字サイズL」のTextを書いてみましょう。以下のコードに`Props`の属性から追加してみてください。
+
+各`Props`がどんな値を持つかは、デザインシステムの[TextコンポーネントのProps](https://smarthr.design/products/components/text/#h2-0)を参照してください。
+
+`as`という`Props`は存在しませんが、これはTextコンポーネントが内部的にstyled-componentsを使っているためです。[styled-componentsの`as`](https://styled-components.com/docs/api#as-polymorphic-prop)を参照してください。
 
 <SmartHRUIPreview
   files={{
