@@ -1,0 +1,71 @@
+export const meta =  {
+  title: 'Button / Input',
+  description: '',
+}
+
+import { Layout } from '@/features/layout'
+import { SmartHRUIPreview } from '@/features/smarthr-preview'
+
+export default ({ children }) => <Layout meta={meta}>{children}</Layout>
+
+ここではButtonコンポーネントとInputコンポーネントの使い方を通してイベントについての考え方を学びます。
+
+## Buttonコンポーネントでイベントを扱う
+
+Buttonコンポーネントの使い方は簡単です。前回のドキュメントで学んだようにButtonをimportして使うだけです。
+ただし、Buttonコンポーネントはただ設置するだけでは何も起こりません。
+
+<SmartHRUIPreview
+  files={{
+    'App.tsx': `import { Button } from 'smarthr-ui'
+
+export default function App() {
+  return (
+    <Button>わたしを押して</Button>
+  )
+}`,
+  }}
+/>
+
+ボタンには何の役割があるでしょうか？
+
+ボタンはユーザーに選択肢を与えます。アプリケーションで行う操作を選択したり、提示されているものの中から選ぶことを可能にします。
+本質的に、ボタンは実行可能な操作をユーザーに伝える手段だと言えるでしょう。
+
+ボタンで操作や選択を促すためには、ボタンに対して何らかのイベントを実装する必要があります。
+以下は最小の実装ですが、ボタンをクリックした時にアラートを表示する例です。ボタンを押してみてください。アラートが表示されるはずです。
+
+<SmartHRUIPreview
+  files={{
+    'App.tsx': `import { Button } from 'smarthr-ui'
+
+export default function App() {
+  return (
+    <Button variant="primary" onClick={()=> alert('押された！')}>わたしを押して</Button>
+  )
+}`,
+  }}
+/>
+
+このコードでは、`onClick`というプロパティに関数（アロー関数式）を渡しています。アロー関数式は`()=> alert('押された！')`の部分です。
+`onClick`はボタンがクリックされた時に実行される関数を指定するためのプロパティです。
+
+`onClick`からわかるように、この要素がクリックされたときに何らかの処理を実行することができます。
+
+このコードの場合はボタンがクリックされた時に関数実行され、[alertメソッド](https://developer.mozilla.org/ja/docs/Web/API/Window/alert)が実行されています。
+
+
+## Inputコンポーネントでイベントを扱う
+
+
+<SmartHRUIPreview
+  files={{
+    'App.tsx': `import { Input } from 'smarthr-ui'
+
+export default function App() {
+  return (
+    <Input />
+  )
+}`,
+  }}
+/>
