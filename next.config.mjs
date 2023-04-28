@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
+
+import NextMdx from '@next/mdx'
+import remarkGfm from 'remark-gfm'
+
 const nextConfig = {
   reactStrictMode: true,
   compiler: {
@@ -7,12 +11,10 @@ const nextConfig = {
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
 }
 
-const withMDX = require('@next/mdx')({
+export default NextMdx({
   extension: /\.mdx?$/,
   options: {
-    remarkPlugins: [],
+    remarkPlugins: [remarkGfm],
     rehypePlugins: [],
   },
-})
-
-module.exports = withMDX(nextConfig)
+})(nextConfig)
