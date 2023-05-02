@@ -1,0 +1,173 @@
+export const meta =  {
+  title: 'Dialog / Tableを使ったレンダリング',
+  description: '',
+}
+
+import { Layout } from '@/features/layout'
+import { SmartHRUIPreview } from '@/features/smarthr-preview'
+
+export default ({ children }) => <Layout meta={meta}>{children}</Layout>
+
+DialogコンポーネントとTableコンポーネントの使い方を通して、より実践的なコンポーネントの扱い方を学びましょう。
+
+ここまでのドキュメントでも分かる通り、コンポーネントをただ設置するだけで実装が完了するケースはほとんどありません。SmartHRのプロダクトでは、特によく使われるコンポーネントとしてDialogとTableが挙げられます。これらを使いこなすことで、より実践的な実装を始める一歩になるでしょう。
+
+## Dialogによる状態管理の基本
+
+Dialogコンポーネントを使うことがコンポーネントの状態管理を学ぶための第1歩になります。
+以下のコードはシンプルにActionDialogを表示する例です。
+
+<SmartHRUIPreview
+  files={{
+    'App.tsx': `import { useState } from 'react'
+import { ActionDialog, Button } from 'smarthr-ui'
+
+export default function App() {
+  const [openedDialog, setOpenedDialog] = useState(false)
+  const toggleDialog = () => setOpenedDialog(!openedDialog)
+  return (
+    <>
+      <Button onClick={toggleDialog}>わたしを押して</Button>
+      <ActionDialog
+        isOpen={openedDialog}
+        title="こんにちは！"
+        actionText="保存"
+        onClickAction={(close) => close()}
+        onClickClose={toggleDialog}
+      >
+        <p style={{ paddingInline: '1.5em' }}>これはActionDialogです。</p>
+      </ActionDialog>
+    </>
+  )
+}`,
+  }}
+/>
+
+このコードでは、「わたしを押して」ボタンを押すことでActionDialogが表示され、「保存」ボタンを押すことでActionDialogが閉じるようになっています。
+
+`useState`で定義している`openedDialog`は、Dialogの開閉状態を管理するためのstateで、`false`の場合はDialogが閉じている状態、`true`の場合はDialogが開いている状態になります。
+
+`onClick`や`onClickClose`などのイベント実行時に`setOpenedDialog`を通して値を変更し、Dialogの開閉を制御しています。具体的には`toggleDialog`関数を通して、`openedDialog`の値を反転させています。
+
+静的なパターンだけでなく、状態を網羅して設計するのはプロダクトデザインの基本です。実装における状態の管理方法も理解することで、後戻りが少なく開発におけるコミュニケーションコストの低い設計になるでしょう。
+
+### 関連リンク
+
+[Dialog | コンポーネント | SmartHR Design System](https://smarthr.design/products/components/dialog/)
+
+
+## Tableを使ったレンダリング
+
+Tableコンポーネントは、表形式のデータを表示するためのコンポーネントです。SmartHRにおいてはオブジェクト一覧からデータログなど、様々な場面で使われるコンポーネントです。多くの場合は、サーバサイドから受け取った情報を元に動的に表示します。
+
+以下のコードはTableを動的に表示した実装例です。
+
+<SmartHRUIPreview
+  files={{
+    'App.tsx': `import { useState } from 'react'
+import { Table, Td, Th, Button } from 'smarthr-ui'
+import { dummyData } from './data.ts'
+
+export default function App() {
+  return (
+    <Table>
+      <thead>
+        <tr>
+          <Th>名前</Th>
+          <Th>カロリー (kcal)</Th>
+          <Th>脂肪 (g)</Th>
+          <Th>炭水化物 (g)</Th>
+          <Th>タンパク質 (g)</Th>
+          <Th>操作</Th>
+        </tr>
+      </thead>
+      <tbody>
+        {dummyData.map(({ name, calories, fat, carbs, protein }) => (
+          <tr key={name}>
+            <Td>{name}</Td>
+            <Td>{calories}</Td>
+            <Td>{fat}</Td>
+            <Td>{carbs}</Td>
+            <Td>{protein}</Td>
+            <Td>
+              <Button size="s" onClick={() => console.log(\`\${name}列を押しました\`)}>ボタン</Button>
+            </Td>
+          </tr>
+        ))}
+      </tbody>
+    </Table>
+  )
+}`,
+ 'data.ts': `export const dummyData = [
+  {
+    name: 'Tea',
+    calories: 0,
+    fat: 0,
+    carbs: 0,
+    protein: 0,
+  },
+  {
+    name: 'Smoothie',
+    calories: 10,
+    fat: 0,
+    carbs: 34.5,
+    protein: 1.0,
+  },
+  {
+    name: 'Milk',
+    calories: 199,
+    fat: 7.8,
+    carbs: 9.9,
+    protein: 6.8,
+  },
+  {
+    name: 'Coffee',
+    calories: 39,
+    fat: 7.8,
+    carbs: 10.9,
+    protein: 0,
+  },
+  {
+    name: 'Orange Juice',
+    calories: 200,
+    fat: 100.0,
+    carbs: 10,
+    protein: 300,
+  },
+  {
+    name: 'Apple Juice',
+    calories: 130,
+    fat: 200,
+    carbs: 99,
+    protein: 68,
+  },
+  {
+    name: 'Green Tea',
+    calories: 300,
+    fat: 100,
+    carbs: 10,
+    protein: 41,
+  },
+  {
+    name: 'Oolong Tea',
+    calories: 100,
+    fat: 10,
+    carbs: 9,
+    protein: 600,
+  },
+]`
+  }}
+/>
+
+`App.tsx`では、SmartHR UIライブラリからTable, Td, Th, Buttonコンポーネントをインポートし、テーブルを作成しています。
+
+ダミーデータとして`data.ts`から`dummyData`を`import`し、`tbody`の中で`map`関数を使って行ごとにデータを表示しています。
+
+`map`関数は、配列のすべての要素に対して指定した関数を呼び出し、その結果から新しい配列を生成する関数です。Reactにおいては配列型の情報をReact要素の配列として返すことで、同じ見た目の情報を表示する時に使います。
+
+### 関連リンク
+
+- [Table | コンポーネント | SmartHR Design System](https://smarthr.design/products/components/table/)
+- [import - JavaScript | MDN](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/import)
+- [export - JavaScript | MDN](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/export)
+- [Rendering Lists](https://react.dev/learn/rendering-lists)
