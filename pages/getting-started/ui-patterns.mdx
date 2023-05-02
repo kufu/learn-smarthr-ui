@@ -1,0 +1,523 @@
+export const meta = {
+  title: 'よくあるパターンを書いてみよう'
+}
+
+import { Layout } from '@/features/layout'
+import { SmartHRUIPreview } from '@/features/smarthr-preview'
+
+export default ({ children }) => <Layout meta={meta}>{children}</Layout>
+
+SmartHR にも頻出する「見出しと操作ボタン」と「ダイアログ内のフォーム」の UI を実装してみましょう。簡潔な UI ですが、ここに UI 実装のすべてが詰まっています。
+
+## 見出しと操作ボタン1
+
+一番頻出するパターンとして「見出しと操作ボタン」のパターンから実装してみましょう。見出しと説明、操作から構成される UI で、利用者が初めて目にし、ページの顔となる UI です。
+
+まずは、それぞれの構成要素を SmartHR UI を使って書いてみましょう。見出しは `Heading` で、説明は `Text`、操作は `Button` を使います。
+
+<SmartHRUIPreview
+  files={{
+    'Theme.tsx': `import { PropsWithChildren } from 'react'
+import { createTheme, ThemeProvider as SHRUIThemeProvider } from 'smarthr-ui'
+import CssBaseLine from 'smarthr-normalize-css'
+import { createGlobalStyle, css, ThemeProvider as SCThemeProvider } from 'styled-components'
+
+export const ThemeProvider: React.FC<PropsWithChildren> = ({ children }) => {
+  const theme = createTheme()
+  return (
+    <SCThemeProvider theme={theme}>
+      <SHRUIThemeProvider theme={theme}>
+        <GlobalStyle />
+        {children}
+      </SHRUIThemeProvider>
+    </SCThemeProvider>
+  )
+}
+
+export const GlobalStyle = createGlobalStyle\`
+  \${CssBaseLine}
+
+  \${({ theme: { color, leading } }) => css\`
+    body {
+      line-height: \${leading.NORMAL};
+      color: \${color.TEXT_BLACK};
+    }
+  \`}
+\`
+`,
+    'App.tsx': `import styled from 'styled-components'
+import { Base, Button, Heading, Text } from 'smarthr-ui'
+
+import { ThemeProvider } from './Theme'
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <Wrapper>
+        <Heading>見出しと操作ボタンのパターン</Heading>
+        <Text as="p">利用者が初めて目にし、ページの顔となる UI です。</Text>
+        <Button>何らかの操作</Button>
+        <Base padding={1}>何らかのコンテンツ</Base>
+      </Wrapper>
+    </ThemeProvider>
+  )
+}
+
+const Wrapper = styled.div\`
+  \${ ({ theme: { color, space } }) => \`
+    background-color: \${color.BACKGROUND};
+    padding: \${space(1)};
+  \`
+  }
+\`
+`,
+  }}
+/>
+
+このままでも悪くないですね! しかし、余白がないため視覚的に情報の関連性を捉えられません。見出しと説明、操作とコンテンツをそれぞれグループ化して、余白をつけてみましょう。
+
+視覚的なグループ化に `Stack` を使います。
+
+<SmartHRUIPreview
+  files={{
+    'Theme.tsx': `import { PropsWithChildren } from 'react'
+import { createTheme, ThemeProvider as SHRUIThemeProvider } from 'smarthr-ui'
+import CssBaseLine from 'smarthr-normalize-css'
+import { createGlobalStyle, css, ThemeProvider as SCThemeProvider } from 'styled-components'
+
+export const ThemeProvider: React.FC<PropsWithChildren> = ({ children }) => {
+  const theme = createTheme()
+  return (
+    <SCThemeProvider theme={theme}>
+      <SHRUIThemeProvider theme={theme}>
+        <GlobalStyle />
+        {children}
+      </SHRUIThemeProvider>
+    </SCThemeProvider>
+  )
+}
+
+export const GlobalStyle = createGlobalStyle\`
+  \${CssBaseLine}
+
+  \${({ theme: { color, leading } }) => css\`
+    body {
+      line-height: \${leading.NORMAL};
+      color: \${color.TEXT_BLACK};
+    }
+  \`}
+\`
+`,
+    'App.tsx': `import styled from 'styled-components'
+import { Base, Button, Heading, Stack, Text } from 'smarthr-ui'
+
+import { ThemeProvider } from './Theme'
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <Wrapper gap={1.5}>
+        <Stack gap={0.5}>
+          <Heading>見出しと操作ボタンのパターン</Heading>
+          <Text as="p">利用者が初めて目にし、ページの顔となる UI です。</Text>
+        </Stack>
+        <Stack gap={0.5}>
+          <Button>何らかの操作</Button>
+          <Base padding={1}>何らかのコンテンツ</Base>
+        </Stack>
+      </Wrapper>
+    </ThemeProvider>
+  )
+}
+
+const Wrapper = styled(Stack)\`
+  \${ ({ theme: { color, space } }) => \`
+    background-color: \${color.BACKGROUND};
+    padding: \${space(1)};
+  \`
+  }
+\`
+`,
+  }}
+/>
+
+おや? それぞれの情報はいい感じにまとまりましたが、操作ボタンが予期せず広がってしまいました。これは `Stack` の `align-items` が `stretch` になっているためです[^1]。`align-items` を `flex-start` に変更するか、`Button` を `<div />` のような要素を咬ませると解決します。ここでは「何らかのコンテンツ」は幅いっぱいに広がってほしいため、後者の方法を採用します。
+
+<SmartHRUIPreview
+  files={{
+    'Theme.tsx': `import { PropsWithChildren } from 'react'
+import { createTheme, ThemeProvider as SHRUIThemeProvider } from 'smarthr-ui'
+import CssBaseLine from 'smarthr-normalize-css'
+import { createGlobalStyle, css, ThemeProvider as SCThemeProvider } from 'styled-components'
+
+export const ThemeProvider: React.FC<PropsWithChildren> = ({ children }) => {
+  const theme = createTheme()
+  return (
+    <SCThemeProvider theme={theme}>
+      <SHRUIThemeProvider theme={theme}>
+        <GlobalStyle />
+        {children}
+      </SHRUIThemeProvider>
+    </SCThemeProvider>
+  )
+}
+
+export const GlobalStyle = createGlobalStyle\`
+  \${CssBaseLine}
+
+  \${({ theme: { color, leading } }) => css\`
+    body {
+      line-height: \${leading.NORMAL};
+      color: \${color.TEXT_BLACK};
+    }
+  \`}
+\`
+`,
+    'App.tsx': `import styled from 'styled-components'
+import { Base, Button, Heading, Stack, Text } from 'smarthr-ui'
+
+import { ThemeProvider } from './Theme'
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <Wrapper gap={1.5}>
+        <Stack gap={0.5}>
+          <Heading>見出しと操作ボタンのパターン</Heading>
+          <Text as="p">利用者が初めて目にし、ページの顔となる UI です。</Text>
+        </Stack>
+        <Stack gap={0.5}>
+          <div>
+            <Button>何らかの操作</Button>
+          </div>
+          <Base padding={1}>何らかのコンテンツ</Base>
+        </Stack>
+      </Wrapper>
+    </ThemeProvider>
+  )
+}
+
+const Wrapper = styled(Stack)\`
+  \${ ({ theme: { color, space } }) => \`
+    background-color: \${color.BACKGROUND};
+    padding: \${space(1)};
+  \`
+  }
+\`
+`,
+  }}
+/>
+
+いい感じです。操作ボタンは「何らかのコンテンツ」の右肩に配置したいので、styled-components を使って書いてみましょう。インライン方向の先頭側の `margin` を `auto` にしましょう。
+
+<SmartHRUIPreview
+  files={{
+    'Theme.tsx': `import { PropsWithChildren } from 'react'
+import { createTheme, ThemeProvider as SHRUIThemeProvider } from 'smarthr-ui'
+import CssBaseLine from 'smarthr-normalize-css'
+import { createGlobalStyle, css, ThemeProvider as SCThemeProvider } from 'styled-components'
+
+export const ThemeProvider: React.FC<PropsWithChildren> = ({ children }) => {
+  const theme = createTheme()
+  return (
+    <SCThemeProvider theme={theme}>
+      <SHRUIThemeProvider theme={theme}>
+        <GlobalStyle />
+        {children}
+      </SHRUIThemeProvider>
+    </SCThemeProvider>
+  )
+}
+
+export const GlobalStyle = createGlobalStyle\`
+  \${CssBaseLine}
+
+  \${({ theme: { color, leading } }) => css\`
+    body {
+      line-height: \${leading.NORMAL};
+      color: \${color.TEXT_BLACK};
+    }
+  \`}
+\`
+`,
+    'App.tsx': `import styled from 'styled-components'
+import { Base, Button, Heading, Stack, Text } from 'smarthr-ui'
+
+import { ThemeProvider } from './Theme'
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <Wrapper gap={1.5}>
+        <Stack gap={0.5}>
+          <Heading>見出しと操作ボタンのパターン</Heading>
+          <Text as="p">利用者が初めて目にし、ページの顔となる UI です。</Text>
+        </Stack>
+        <Stack gap={0.5}>
+          <ActionArea>
+            <Button>何らかの操作</Button>
+          </ActionArea>
+          <Base padding={1}>何らかのコンテンツ</Base>
+        </Stack>
+      </Wrapper>
+    </ThemeProvider>
+  )
+}
+
+const Wrapper = styled(Stack)\`
+  \${ ({ theme: { color, space } }) => \`
+    background-color: \${color.BACKGROUND};
+    padding: \${space(1)};
+  \`
+  }
+\`
+
+const ActionArea = styled.div\`
+  margin-inline-start: auto;
+\`
+`,
+  }}
+/>
+
+素晴らしい! これで完成!! と言いたいところでしたが「何らかの操作」だけでなく「必要な操作」ボタンが追加で必要になってしまいました。「何らかの操作」に並べて「必要な操作」ボタンを足してみましょう。
+
+<SmartHRUIPreview
+  files={{
+    'Theme.tsx': `import { PropsWithChildren } from 'react'
+import { createTheme, ThemeProvider as SHRUIThemeProvider } from 'smarthr-ui'
+import CssBaseLine from 'smarthr-normalize-css'
+import { createGlobalStyle, css, ThemeProvider as SCThemeProvider } from 'styled-components'
+
+export const ThemeProvider: React.FC<PropsWithChildren> = ({ children }) => {
+  const theme = createTheme()
+  return (
+    <SCThemeProvider theme={theme}>
+      <SHRUIThemeProvider theme={theme}>
+        <GlobalStyle />
+        {children}
+      </SHRUIThemeProvider>
+    </SCThemeProvider>
+  )
+}
+
+export const GlobalStyle = createGlobalStyle\`
+  \${CssBaseLine}
+
+  \${({ theme: { color, leading } }) => css\`
+    body {
+      line-height: \${leading.NORMAL};
+      color: \${color.TEXT_BLACK};
+    }
+  \`}
+\`
+`,
+    'App.tsx': `import styled from 'styled-components'
+import { Base, Button, Heading, Stack, Text } from 'smarthr-ui'
+
+import { ThemeProvider } from './Theme'
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <Wrapper gap={1.5}>
+        <Stack gap={0.5}>
+          <Heading>見出しと操作ボタンのパターン</Heading>
+          <Text as="p">利用者が初めて目にし、ページの顔となる UI です。</Text>
+        </Stack>
+        <Stack gap={0.5}>
+          <ActionArea>
+            <Button>何らかの操作</Button>
+            <Button>必要な操作</Button>
+          </ActionArea>
+          <Base padding={1}>何らかのコンテンツ</Base>
+        </Stack>
+      </Wrapper>
+    </ThemeProvider>
+  )
+}
+
+const Wrapper = styled(Stack)\`
+  \${ ({ theme: { color, space } }) => \`
+    background-color: \${color.BACKGROUND};
+    padding: \${space(1)};
+  \`
+  }
+\`
+
+const ActionArea = styled.div\`
+  margin-inline-start: auto;
+\`
+`,
+  }}
+/>
+
+悪くないですね。「何らかの操作」と「必要な操作」の間が詰まっているため余白を入れましょう。`Cluster` を使ってください。
+
+```tsx
+const ActionArea = styled.div``
+```
+
+としているところを
+
+```tsx
+const ActionArea = styled(Cluster)``
+```
+
+とすると要素を置き換えられます。
+
+<SmartHRUIPreview
+  files={{
+    'Theme.tsx': `import { PropsWithChildren } from 'react'
+import { createTheme, ThemeProvider as SHRUIThemeProvider } from 'smarthr-ui'
+import CssBaseLine from 'smarthr-normalize-css'
+import { createGlobalStyle, css, ThemeProvider as SCThemeProvider } from 'styled-components'
+
+export const ThemeProvider: React.FC<PropsWithChildren> = ({ children }) => {
+  const theme = createTheme()
+  return (
+    <SCThemeProvider theme={theme}>
+      <SHRUIThemeProvider theme={theme}>
+        <GlobalStyle />
+        {children}
+      </SHRUIThemeProvider>
+    </SCThemeProvider>
+  )
+}
+
+export const GlobalStyle = createGlobalStyle\`
+  \${CssBaseLine}
+
+  \${({ theme: { color, leading } }) => css\`
+    body {
+      line-height: \${leading.NORMAL};
+      color: \${color.TEXT_BLACK};
+    }
+  \`}
+\`
+`,
+    'App.tsx': `import styled from 'styled-components'
+import { Base, Button, Cluster, Heading, Stack, Text } from 'smarthr-ui'
+
+import { ThemeProvider } from './Theme'
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <Wrapper gap={1.5}>
+        <Stack gap={0.5}>
+          <Heading>見出しと操作ボタンのパターン</Heading>
+          <Text as="p">利用者が初めて目にし、ページの顔となる UI です。</Text>
+        </Stack>
+        <Stack gap={0.5}>
+          <ActionArea>
+            <Button>何らかの操作</Button>
+            <Button>必要な操作</Button>
+          </ActionArea>
+          <Base padding={1}>何らかのコンテンツ</Base>
+        </Stack>
+      </Wrapper>
+    </ThemeProvider>
+  )
+}
+
+const Wrapper = styled(Stack)\`
+  \${ ({ theme: { color, space } }) => \`
+    background-color: \${color.BACKGROUND};
+    padding: \${space(1)};
+  \`
+  }
+\`
+
+const ActionArea = styled(Cluster)\`
+  margin-inline-start: auto;
+\`
+`,
+  }}
+/>
+
+いい感じになりましたね。最後に画面の幅を狭めたり、広げたり、各要素の内容を変えてみて、画面がどのように変わるのか確認しましょう。
+
+## 見出しと操作ボタン2
+
+「見出しと操作ボタン1」では見出しと説明文、操作ボタン、コンテンツを並べました。今度は説明文がない場合のレイアウトを考えてみましょう。
+
+見出しと操作ボタンを左右に並べ、その下に「何らかのコンテンツ」を置いてみましょう。`Cluster` の `justify="space-between"` を使うと、簡単に要素を左右に並べられます。
+
+<SmartHRUIPreview
+  files={{
+    'Theme.tsx': `import { PropsWithChildren } from 'react'
+import { createTheme, ThemeProvider as SHRUIThemeProvider } from 'smarthr-ui'
+import CssBaseLine from 'smarthr-normalize-css'
+import { createGlobalStyle, css, ThemeProvider as SCThemeProvider } from 'styled-components'
+
+export const ThemeProvider: React.FC<PropsWithChildren> = ({ children }) => {
+  const theme = createTheme()
+  return (
+    <SCThemeProvider theme={theme}>
+      <SHRUIThemeProvider theme={theme}>
+        <GlobalStyle />
+        {children}
+      </SHRUIThemeProvider>
+    </SCThemeProvider>
+  )
+}
+
+export const GlobalStyle = createGlobalStyle\`
+  \${CssBaseLine}
+
+  \${({ theme: { color, leading } }) => css\`
+    body {
+      line-height: \${leading.NORMAL};
+      color: \${color.TEXT_BLACK};
+    }
+  \`}
+\`
+`,
+    'App.tsx': `import styled from 'styled-components'
+import { Base, Button, Cluster, Heading, Stack, Text } from 'smarthr-ui'
+
+import { ThemeProvider } from './Theme'
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <Wrapper>
+        <Cluster align="center" justify="space-between">
+          <Heading>見出しと操作ボタンのパターン</Heading>
+          <ActionArea>
+            <Button>何らかの操作</Button>
+            <Button>必要な操作</Button>
+          </ActionArea>
+        </Cluster>
+        <Base padding={1}>何らかのコンテンツ</Base>
+      </Wrapper>
+    </ThemeProvider>
+  )
+}
+
+const Wrapper = styled(Stack)\`
+  \${ ({ theme: { color, space } }) => \`
+    background-color: \${color.BACKGROUND};
+    padding: \${space(1)};
+  \`
+  }
+\`
+
+const ActionArea = styled(Cluster)\`
+  margin-inline-start: auto;
+\`
+`,
+  }}
+/>
+
+ここでは `Cluster` に `justify` だけでなく縦位置を中央に寄せるため `align="center"` も指定しました。
+
+画面の幅を狭めたり、広げたりしてみてください。`Cluster` がどのように働くのか確認しましょう。
+
+「見出しと操作ボタンのパターン1」に引き続き、`ActionArea` に `margin-inline-start: auto;` を指定しているため、操作ボタン群が折り返された場合に、操作ボタンだけ「何らかのコンテンツ」の右肩に寄るようになっています。
+
+## ダイアログ内のフォーム
+
+（書き途中です）
+
+[^1]: [align-items - CSS: カスケーディングスタイルシート | MDN](https://developer.mozilla.org/ja/docs/Web/CSS/align-items#%E5%80%A4)
