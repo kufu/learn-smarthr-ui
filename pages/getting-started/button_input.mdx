@@ -1,0 +1,113 @@
+export const meta =  {
+  title: 'Button / Inputによるイベントの扱い方',
+  description: '',
+}
+
+import { Layout } from '@/features/layout'
+import { SmartHRUIPreview } from '@/features/smarthr-preview'
+
+export default ({ children }) => <Layout meta={meta}>{children}</Layout>
+
+ここではButtonコンポーネントとInputコンポーネントの使い方を通して、イベントの扱い方を学びます。
+
+イベントとは、ユーザーのキーやマウス入力、ブラウザからの要求に応じて処理を実行するプログラムの動作および概念を指します。
+
+コンポーネントをただ設置するだけでなく、イベントを実装すると、UI としての振る舞いを表現できます。
+
+## Buttonコンポーネントでイベントを扱う
+
+Buttonコンポーネントの使い方は簡単です。前回のドキュメントで学んだようにButtonをimportして使うだけです。しかし、Buttonコンポーネントをただ設置するだけでは何も起こりません。
+
+<SmartHRUIPreview
+  files={{
+    'App.tsx': `import { Button } from 'smarthr-ui'
+
+export default function App() {
+  return (
+    <Button>わたしを押して</Button>
+  )
+}`,
+  }}
+/>
+
+ボタンには何の役割があるでしょうか？
+
+ボタンは押すことによって、何らかの機能や動作を実行するための装置です。イベントによって、ボタンはどんな役割でも持つことができます。加えて、利用者にボタンを押してもらうために、そのボタンの役割をラベルや形状を通して直感的に理解させる必要もあります。
+
+ボタンに役割を持たせるには、何らかのイベントを実装する必要があります。以下は、ボタンを押した時にアラートを表示する最小の実装例です。ボタンを押してみてください。アラートが表示されるはずです。
+
+<SmartHRUIPreview
+  files={{
+    'App.tsx': `import { Button } from 'smarthr-ui'
+
+export default function App() {
+  return (
+    <Button onClick={()=> alert('押された!')}>わたしを押して</Button>
+  )
+}`,
+  }}
+/>
+
+このコードでは、`onClick`というプロパティに関数（アロー関数式）を渡しています。アロー関数式は`()=> alert('押された!')`の部分です。`onClick`はボタンがクリックされた時に実行される関数を指定するためのプロパティです。ボタンが押された時に、`onClick`に書かれた関数（ここでは`() => alert('押された!')`）が実行されます。
+
+### 関連リンク
+
+[Button | コンポーネント | SmartHR Design System](https://smarthr.design/products/components/button/)
+
+
+## Inputコンポーネントでイベントを扱う
+
+次にInputコンポーネントでイベントを扱う方法を学びましょう。Buttonコンポーネントと同じように、Inputコンポーネントを設置するだけではなにも起こりません。文字の入力はできますが、次のコードでは入力された文字を取得することはできません。
+
+<SmartHRUIPreview
+  files={{
+    'App.tsx': `import { Input } from 'smarthr-ui'
+
+export default function App() {
+  return (
+    <Input />
+  )
+}`,
+  }}
+/>
+
+フォームの役割はユーザーからの入力を受け取ることです。
+
+フォームから利用者が入力したデータを受け取るには、入力を受け取るためのイベントと値を実装する必要があります。以下は、React を使って入力した文字を受け取り、入力値の隣に入力した文字を表示する最小の実装例です。
+
+<SmartHRUIPreview
+  files={{
+    'App.tsx': `import { useState } from 'react'
+import { Input } from 'smarthr-ui'
+
+export default function App() {
+  const [value, setValue] = useState('')
+
+  return (
+    <>
+      <label>何らかの入力
+        <Input value={value} onChange={(event)=> setValue(event.target.value)} />
+      </label>
+      <p>入力値: {value}</p>
+    </>
+  )
+}`,
+  }}
+/>
+
+このコードでは`onChange`というプロパティに関数 `(event)=> setValue(event.target.value)` を渡しています。`onChange`はフォームの値が変更された時に実行される関数を指定するためのプロパティです。
+
+ここで`useState`という新しい関数が登場しています。これはReactの機能です。`useState`を使うことで、状態を管理するための関数と、その状態を取得するための変数を同時に定義できます。
+
+`useState`は`const [状態変数, 状態を変更するための関数] = useState(状態の初期値)`という形で使います。
+
+前述の例では、`onChange`関数の中で`setValue`関数を実行し、利用者が入力した値を`setValue`で渡し、`value`変数に格納された値を`<p>入力値: {value}</p>`で表示しています。
+
+`onChange`は一文字入力するたびに実行されます。入力に応じて`value`の値も変更されます。
+
+`useState`の詳細については[Reactのドキュメント](https://react.dev/reference/react/useState)を参照してください。
+
+
+### 関連リンク
+
+[Input | コンポーネント | SmartHR Design System](https://smarthr.design/products/components/input/)
