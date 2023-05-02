@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 
 import { GetStaticProps } from 'next'
-import { BaseColumn, WarningIcon } from 'smarthr-ui'
+import { BaseColumn, Stack, WarningIcon } from 'smarthr-ui'
 
 import { TextLink } from '@/features/ui'
 
@@ -24,14 +24,14 @@ const Archive: React.FC<{ posts: Post[] }> = ({ posts }) => {
         要素だけでなく、業務アプリケーションに特化したコンポーネントも含まれています。開発者はこれらのコンポーネントを組み合わせることで、短期間で複雑な業務アプリケーションを構築できます。
       </p>
 
-      <ul>
+      <Stack as="ul" gap={0.25}>
         <li>
           <TextLink href="https://smarthr.design/products/components/">コンポーネント｜SmartHR Design System</TextLink>
         </li>
         <li>
           <TextLink href="https://github.com/kufu/smarthr-ui">SmartHR UI｜GitHub - kufu/smarthr-ui</TextLink>
         </li>
-      </ul>
+      </Stack>
 
       <h2>このサイトの目的</h2>
 
@@ -49,13 +49,13 @@ const Archive: React.FC<{ posts: Post[] }> = ({ posts }) => {
       </BaseColumn>
 
       <h2>目次</h2>
-      <ul>
+      <Stack as="ul" gap={0.25}>
         {posts.map(({ slug, title }) => (
           <li key={slug}>
             <TextLink href={`/getting-started/${slug}`}>{title}</TextLink>
           </li>
         ))}
-      </ul>
+      </Stack>
     </main>
   )
 }
@@ -86,7 +86,7 @@ const getPosts = async () => {
         return {
           ...meta,
           slug,
-        }
+        } as Post
       })
       .filter((post) => post),
   )) as Post[]
