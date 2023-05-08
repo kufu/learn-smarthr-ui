@@ -10,7 +10,7 @@ export const SmartHRUIPreview: React.FC<ComponentProps<typeof Sandpack>> = (prop
         dependencies: {
           'smarthr-ui': 'latest',
           'smarthr-normalize-css': 'latest',
-          'styled-components': 'latest',
+          'styled-components': '5.3.9',
         },
       }}
       options={{
