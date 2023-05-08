@@ -9,6 +9,7 @@ export const SmartHRUIPreview: React.FC<ComponentProps<typeof Sandpack>> = (prop
       customSetup={{
         dependencies: {
           'smarthr-ui': 'latest',
+          'smarthr-normalize-css': '5.3.9',
           'styled-components': 'latest',
         },
       }}
